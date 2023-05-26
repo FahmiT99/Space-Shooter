@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour
     public Image blueImage;
     private float lastShotTime;
     private bool isCooldown;
+    
     private void Start()
     {
         ScreenHeight = Camera.main.orthographicSize;
@@ -30,14 +31,40 @@ public class PlayerController : MonoBehaviour
     }
 
     private void Update()
+    {    
+        MouseControlOption();
+        KeyboardControlOption();
+        GamepadControlOption();
+        ShootLaser();
+        TripleShot();
+        
+    }
+
+    private void MouseControlOption()
     {
         float mouseY = Input.GetAxis("Mouse Y") * sensitivity;
         float newYPosition = Mathf.Clamp(transform.position.y + mouseY * moveSpeed * Time.deltaTime, -ScreenHeight +1, ScreenHeight -0.5f);
         transform.position = new Vector3(transform.position.x, newYPosition, transform.position.z);
-
-        ShootLaser();
-        TripleShot();
     }
+    private void KeyboardControlOption()
+    {
+        float verticalInput = Input.GetAxis("Vertical");
+        float newYPosition = transform.position.y + verticalInput * moveSpeed * Time.deltaTime;
+        float clampedYPosition = Mathf.Clamp(newYPosition, -ScreenHeight + 1, ScreenHeight - 0.5f);
+        transform.position = new Vector3(transform.position.x, clampedYPosition, transform.position.z);
+    }
+
+    private void GamepadControlOption()
+    {
+        float gamepadY = Input.GetAxis("Vertical");
+        if (Mathf.Abs(gamepadY) > 0.1f)
+        {
+            float newYPosition = transform.position.y + gamepadY * moveSpeed * Time.deltaTime;
+            float clampedYPosition = Mathf.Clamp(newYPosition, -ScreenHeight + 1, ScreenHeight - 0.5f);
+            transform.position = new Vector3(transform.position.x, clampedYPosition, transform.position.z);
+        }
+    }
+
 
 
     private void ShootLaser()
@@ -48,7 +75,7 @@ public class PlayerController : MonoBehaviour
         {
             canShoot = true;
         }
-        if ((Input.GetMouseButton(0)))
+        if ((Input.GetMouseButton(0)) || Input.GetKey(KeyCode.Space) || Input.GetButton("Fire1"))
         {
             if (canShoot)
             {
