@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.Rendering;
 
@@ -14,6 +15,14 @@ public class PlayerController : MonoBehaviour
     private float ScreenHeight;
     public float sensitivity = 7f;
 
+    public GameObject TriplelaserPrefab;
+    public Transform TriplelaserSpawnPoint;
+    public AudioSource TriplelaserAudioSource;
+    public float cooldownDuration = 1f;
+    public Image cooldownIndicator;
+    public Image blueImage;
+    private float lastShotTime;
+    private bool isCooldown;
     private void Start()
     {
         ScreenHeight = Camera.main.orthographicSize;
@@ -27,6 +36,7 @@ public class PlayerController : MonoBehaviour
         transform.position = new Vector3(transform.position.x, newYPosition, transform.position.z);
 
         ShootLaser();
+        TripleShot();
     }
 
 
@@ -48,6 +58,36 @@ public class PlayerController : MonoBehaviour
                 laserAudioSource.Play();
             }
         }
+    }
+
+    private void TripleShot()
+    {
+        if (Input.GetMouseButtonDown(1) && !isCooldown)
+        {
+            Instantiate(TriplelaserPrefab, TriplelaserSpawnPoint.position, transform.rotation);
+            TriplelaserAudioSource.Play();
+            lastShotTime = Time.time;
+            isCooldown = true;
+            blueImage.GetComponent<Image>().enabled = false;
+        }
+
+        if (isCooldown)
+        {
+            float timeSinceLastShot = Time.time - lastShotTime;
+            float cooldownProgress = Mathf.Clamp01(timeSinceLastShot / cooldownDuration);
+            UpdateCooldownUI(cooldownProgress);
+
+            if (timeSinceLastShot >= cooldownDuration)
+            { 
+                blueImage.GetComponent<Image>().enabled = true;
+                isCooldown = false;
+                
+            }
+        }
+    }
+    private void UpdateCooldownUI(float progress)
+    {
+        cooldownIndicator.fillAmount = 0f + progress;
     }
 }
      
