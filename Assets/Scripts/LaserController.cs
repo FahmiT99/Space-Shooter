@@ -22,4 +22,16 @@ public class LaserController : MonoBehaviour
         temp.x += speed * Time.deltaTime;
         transform.position = temp;
     }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Debug.Log("Collision detected with: " + collision.gameObject.name);
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            Destroy(gameObject);
+        
+        }
+    }
+
+
 }

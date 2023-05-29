@@ -29,7 +29,7 @@ public class MissileController : MonoBehaviour
         }
         else
         {
-            // No target, destroy the missile
+            // No target?, destroy the missile
             Destroy(gameObject);
         }
     }

@@ -34,6 +34,20 @@ public class PlayerController : MonoBehaviour
     public Transform missileSpawnPoint1;
     public Transform missileSpawnPoint2;
 
+    // Shield Ability
+    public GameObject ShieldPrefab;
+    private bool shieldReady = true;
+    private float cooldownDuration2 = 30f; // ShieldUsageTime + 20f
+    private float shieldUsageTime = 10f;
+    private float lastShieldActivationTime = 0f;
+
+
+
+
+    //End of Shield Ability
+
+
+
     private void Start()
     {
         ScreenHeight = Camera.main.orthographicSize;
@@ -48,6 +62,7 @@ public class PlayerController : MonoBehaviour
         ShootLaser();
         TripleShot();
         ShootMissiles();
+        ActivateShield();
 
     }
 
@@ -184,6 +199,48 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+
+
+
+    // newest Changes
+    private void ActivateShield()
+    {
+        if (Input.GetKeyDown(KeyCode.H) && shieldReady)
+        {
+            // Activate the shield as a child of the spaceship
+            GameObject shield = Instantiate(ShieldPrefab, transform);
+            shield.transform.localPosition = Vector3.zero;
+            Destroy(shield, shieldUsageTime);
+
+            shieldReady = false;
+            lastShieldActivationTime = Time.time;
+
+            StartCoroutine(ActivateShieldCooldown());
+        }
+
+        if (!shieldReady)
+        {
+            // Check if the cooldown is over
+            float timeSinceLastActivation = Time.time - lastShieldActivationTime;
+            if (timeSinceLastActivation >= cooldownDuration2)
+            {
+                shieldReady = true;
+            }
+        }
+    }
+
+    private IEnumerator ActivateShieldCooldown()
+    {
+        yield return new WaitForSeconds(cooldownDuration2);
+        shieldReady = true;
+    }
+
+
+
+    // End of the Newest Changes
+
+
+
     private GameObject GetRandomEnemy(GameObject[] enemies, GameObject ignore = null)
     {
         List<GameObject> availableEnemies = new List<GameObject>(enemies);
@@ -196,6 +253,8 @@ public class PlayerController : MonoBehaviour
         int randomIndex = Random.Range(0, availableEnemies.Count);
         return availableEnemies[randomIndex];
     }
+
+    
     private void UpdateCooldownUI(float progress, Image cooldownIndicator)
     {
         cooldownIndicator.fillAmount = 0f + progress;
