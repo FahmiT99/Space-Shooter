@@ -189,6 +189,7 @@ MonoBehaviour:
   explosionParticleSystem: {fileID: 2831946975764918057, guid: 8dd8eea85b6fe3b47ba2a292e01b21fa, type: 3}
   movementSpeed: 2
   audioSource: {fileID: -6486268997865405917}
+  damageTextPrefab: {fileID: 6613540995496826018, guid: cc2dba90a4837494f9019a02cf0308e1, type: 3}
 --- !u!82 &-6486268997865405917
 AudioSource:
   m_ObjectHideFlags: 0
@@ -201,7 +202,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 2ab0f1363482cc1469e52d64af5dea1e, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.225
+  m_Volume: 1
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -300,4 +301,3 @@ MonoBehaviour:
   laserPrefab: {fileID: 1144672978867142846, guid: c3fa53870f6547c48b10e21f0d7c1359, type: 3}
   minShootInterval: 2
   maxShootInterval: 4
-  shootForce: 10

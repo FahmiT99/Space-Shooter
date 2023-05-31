@@ -9,6 +9,7 @@ TagManager:
   - TripleLaser
   - RedLaser
   - Missile
+  - Canvas
   layers:
   - Default
   - TransparentFX
