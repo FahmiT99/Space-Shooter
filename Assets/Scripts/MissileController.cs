@@ -6,30 +6,32 @@ public class MissileController : MonoBehaviour
     public Transform target;
     public float amplitude = 2f; // Amplitude of the wave
     public float frequency = 2f; // Frequency of the wave
+    public float rotateSpeed = 200f;
 
-    private float initialY; // Initial Y position of the missile
-    private float randomOffset; // Random offset for movement
-
-    private void Start()
-    {
-        initialY = transform.position.y;
-        randomOffset = Random.Range(0f, 1f); // Generate a random offset for movement
-    }
 
     private void Update()
     {
         if (target != null)
-        {
-            // Calculate the current position along the sine wave
-            float yOffset = amplitude * Mathf.Sin((frequency * Time.time) + randomOffset);
-            Vector3 targetPosition = target.transform.position + new Vector3(0f, yOffset, 0f);
+        {         
+            Vector3 direction = (target.position - transform.position).normalized;
 
-            // Move towards the target position
-            transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
+            // Rotate the missile towards the target
+            Quaternion targetRotation = Quaternion.LookRotation(Vector3.forward, direction);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotateSpeed * Time.deltaTime);
+
+            // Move the missile towards the target
+            transform.Translate(Vector3.up * speed * Time.deltaTime);
         }
         else
         {
-            // No target?, destroy the missile
+            Vector3 temp = transform.position;
+            temp.x += speed * Time.deltaTime;
+            transform.position = temp;
+        }
+        Vector3 viewportPos = Camera.main.WorldToViewportPoint(transform.position);
+
+        if (viewportPos.x < 0f || viewportPos.x > 1f)
+        {
             Destroy(gameObject);
         }
     }

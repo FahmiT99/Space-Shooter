@@ -5,6 +5,7 @@ using UnityEngine.Rendering;
 using System.Reflection;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
@@ -17,6 +18,8 @@ public class PlayerController : MonoBehaviour
     private bool canShoot;
     private float ScreenHeight;
     public float sensitivity = 7f;
+    public AudioSource Hit;
+    public ParticleSystem explosionParticleSystem;
 
     //triple laser
     public GameObject TriplelaserPrefab;
@@ -37,6 +40,7 @@ public class PlayerController : MonoBehaviour
     public Transform missileSpawnPoint1;
     public Transform missileSpawnPoint2;
     private float lastShotTime2 = 0f;
+    public AudioSource MissileAudioSource;
 
 
     // Shield Ability
@@ -46,8 +50,11 @@ public class PlayerController : MonoBehaviour
     private float shieldUsageTime = 10f;
     private float lastShieldActivationTime = 0f;
 
-    public AudioSource Hit;
-    public ParticleSystem explosionParticleSystem;
+   
+    //GOd mode
+    public AudioSource GodModeAudioSource;
+    public TextMeshProUGUI godModeIndicatorText;
+    private bool isGodMode = false;
 
 
 
@@ -55,6 +62,7 @@ public class PlayerController : MonoBehaviour
     {
         ScreenHeight = Camera.main.orthographicSize;
         current_Shoot_timer = shoot_Timer;
+        SetGodMode(false);
     }
 
     private void Update()
@@ -66,7 +74,12 @@ public class PlayerController : MonoBehaviour
         TripleShot();
         ShootMissiles();
         ActivateShield();
-         
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            isGodMode = !isGodMode;
+            SetGodMode(isGodMode);
+        }
+
     }
 
     private void MouseControlOption()
@@ -140,46 +153,47 @@ public class PlayerController : MonoBehaviour
     }
     private void ShootMissiles()
     {
-        //TODO: improve the missile targeting and movement
+         
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
-        int numEnemies = enemies.Length;
-
-        if (numEnemies == 0)
-        {
-            return;
-        }
+        int numEnemies = enemies.Length;   
 
         if ((Input.GetMouseButtonDown(2) || Input.GetKeyDown(KeyCode.Alpha3)) && !isCooldownMissile)
         {
+            if (numEnemies == 0)
+            {
+                GameObject missile1 = Instantiate(missilePrefab, missileSpawnPoint1.position, Quaternion.Euler(0f, 0f, -90f));
+                GameObject missile2 = Instantiate(missilePrefab, missileSpawnPoint2.position, Quaternion.Euler(0f, 0f, -90f));
+                MissileAudioSource.Play();
+                lastShotTime2 = Time.time;
+                isCooldownMissile = true;
+                MissileImage.GetComponent<Image>().enabled = false;
+            }
             if (numEnemies == 1)
             {
                 GameObject targetEnemy = enemies[0];
                 GameObject missile1 = Instantiate(missilePrefab, missileSpawnPoint1.position, Quaternion.Euler(0f, 0f, -90f));
                 GameObject missile2 = Instantiate(missilePrefab, missileSpawnPoint2.position, Quaternion.Euler(0f, 0f, -90f));
-
                 missile1.GetComponent<MissileController>().SetTarget(targetEnemy.transform);
                 missile2.GetComponent<MissileController>().SetTarget(targetEnemy.transform);
 
-                //TriplelaserAudioSource.Play();
+                MissileAudioSource.Play();
                 lastShotTime2 = Time.time;
                 isCooldownMissile = true;
                 MissileImage.GetComponent<Image>().enabled = false;
             }
             else if (enemies.Length > 1)
             {
-                // Multiple enemies, each missile targets a random enemy
                 GameObject targetEnemy1 = GetRandomEnemy(enemies);
                 GameObject targetEnemy2 = GetRandomEnemy(enemies, targetEnemy1);
-
                 GameObject missile1 = Instantiate(missilePrefab, missileSpawnPoint1.position, Quaternion.Euler(0f, 0f, -45f));
                 GameObject missile2 = Instantiate(missilePrefab, missileSpawnPoint2.position, Quaternion.Euler(0f, 0f, -90f));
-
                 missile1.GetComponent<MissileController>().SetTarget(targetEnemy1.transform);
                 missile2.GetComponent<MissileController>().SetTarget(targetEnemy2.transform);
-                //TriplelaserAudioSource.Play();
-                 lastShotTime2 = Time.time;
-                 isCooldownMissile = true;
-                 MissileImage.GetComponent<Image>().enabled = false;
+
+                MissileAudioSource.Play();
+                lastShotTime2 = Time.time;
+                isCooldownMissile = true;
+                MissileImage.GetComponent<Image>().enabled = false;
             }            
         }
         if (isCooldownMissile)
@@ -197,7 +211,25 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void SetGodMode(bool isActive)
+    {
+        // Enable/disable God Mode and update the indicator text
+        isGodMode = isActive;
 
+        if (isGodMode)
+        {
+            // Play the sound effect when God Mode is activated
+            GodModeAudioSource.Play();
+
+            // Show the God Mode indicator text
+            godModeIndicatorText.text = "God Mode Activated";
+        }
+        else
+        {
+            // Hide the God Mode indicator text
+            godModeIndicatorText.text = string.Empty;
+        }
+    }
     private void ActivateShield()
     {
         if (Input.GetKeyDown(KeyCode.Alpha2) && shieldReady)
@@ -252,21 +284,23 @@ public class PlayerController : MonoBehaviour
 
     
     private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("EnemyLaser"))
-        {           
-            if (explosionParticleSystem != null)
+    {   if (!isGodMode)
+        {
+            if (collision.gameObject.CompareTag("EnemyLaser"))
             {
-                ParticleSystem newExplosion = Instantiate(explosionParticleSystem, transform.position, Quaternion.identity);
-                newExplosion.Play();
+                if (explosionParticleSystem != null)
+                {
+                    ParticleSystem newExplosion = Instantiate(explosionParticleSystem, transform.position, Quaternion.identity);
+                    newExplosion.Play();
+                }
+                Hit.Play();
+
+                GameManagerScript gameManager = FindObjectOfType<GameManagerScript>();
+                gameManager.StartFadeOut();
+                gameManager.StartMainMenuDelay();
+                Destroy(gameObject);
+
             }
-            Hit.Play();
-
-            GameManagerScript gameManager = FindObjectOfType<GameManagerScript>();
-            gameManager.StartFadeOut();
-            gameManager.StartMainMenuDelay();            
-            Destroy(gameObject);
-
         }
     }
     
