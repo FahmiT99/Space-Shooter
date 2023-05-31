@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: -6533041790537387932}
   m_Layer: 0
   m_Name: laserRed01
-  m_TagString: Enemy
+  m_TagString: RedLaser
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

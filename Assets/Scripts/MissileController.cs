@@ -38,12 +38,10 @@ public class MissileController : MonoBehaviour
     {
         target = newTarget;
     }
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (other.CompareTag("Enemy"))
+        if (collision.gameObject.CompareTag("Enemy"))
         {
-             
-            // Destroy the missile
             Destroy(gameObject);
         }
     }

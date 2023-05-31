@@ -97,9 +97,9 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7923888530022507679}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
-  m_UseFullKinematicContacts: 0
+  m_UseFullKinematicContacts: 1
   m_UseAutoMass: 0
   m_Mass: 0.0001
   m_LinearDrag: 0
@@ -188,8 +188,7 @@ MonoBehaviour:
   enemyLife1: 3
   explosionParticleSystem: {fileID: 2831946975764918057, guid: 8dd8eea85b6fe3b47ba2a292e01b21fa, type: 3}
   movementSpeed: 2
-  audioSources:
-  - {fileID: -6486268997865405917}
+  audioSource: {fileID: -6486268997865405917}
 --- !u!82 &-6486268997865405917
 AudioSource:
   m_ObjectHideFlags: 0
@@ -299,5 +298,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   laserPrefab: {fileID: 1144672978867142846, guid: c3fa53870f6547c48b10e21f0d7c1359, type: 3}
-  shootInterval: 2
+  minShootInterval: 2
+  maxShootInterval: 4
   shootForce: 10

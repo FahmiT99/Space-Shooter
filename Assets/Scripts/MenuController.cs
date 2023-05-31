@@ -5,19 +5,16 @@ using UnityEngine.SceneManagement;
 
 public class MenuController : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
+    
 
-    }
-
-    // Update is called once per frame
+  
     void Update()
     {
         if(Input.GetKey(KeyCode.Space) || Input.GetButton("Fire1"))
         {
             StartGameScene();
         }
+         
     }
 
     public void StartGameScene()
