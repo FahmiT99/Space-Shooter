@@ -4,6 +4,7 @@ using System.Collections;
 using UnityEngine.Rendering;
 using System.Reflection;
 using System.Collections.Generic;
+using System;
 
 public class Enemy : MonoBehaviour
 {
@@ -18,7 +19,7 @@ public class Enemy : MonoBehaviour
     private int direction = 1;
 
     // Soundeffects:
-    public AudioSource[] audioSources = new AudioSource[2];
+    public AudioSource audioSource;
 
     //End of soundeffects
 
@@ -26,31 +27,14 @@ public class Enemy : MonoBehaviour
     {
         float halfEnemyHeight = transform.localScale.y / 2f;
         Camera mainCamera = Camera.main;
-
         // Calculate the minimum and maximum Y positions within the camera view
         minY = mainCamera.ViewportToWorldPoint(new Vector3(0, 0, 0)).y + halfEnemyHeight;
         maxY = mainCamera.ViewportToWorldPoint(new Vector3(0, 1, 0)).y - halfEnemyHeight;
-
-
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        Debug.Log(collision.gameObject.name);
-        if (collision.gameObject.CompareTag("Enemy"))
-        {
-            enemyLife1 -= 1;
-            if (enemyLife1 > 0)
-            {
-                PlayAudio(0);
-            }
-        }
-    }
 
-    // Update is called once per frame
     void Update()
     {
-
          Vector3 newPosition = transform.position + new Vector3(0, direction * movementSpeed * Time.deltaTime, 0);
 
         // Check if the enemy has reached the boundary
@@ -77,13 +61,35 @@ public class Enemy : MonoBehaviour
             newExplosion.Play();
         }
     }
-
-    private void PlayAudio(int index)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (index >= 0 && index < audioSources.Length && audioSources[index] != null)
+        if (collision.gameObject.CompareTag("RedLaser"))
         {
-            audioSources[index].Play();
+            enemyLife1 -= 1;
+            if (enemyLife1 > 0)
+            {
+                audioSource.Play();
+            }
+        }
+
+        if (collision.gameObject.CompareTag("TripleLaser"))
+        {
+            enemyLife1 -= 10;
+            if (enemyLife1 > 0)
+            {
+                audioSource.Play();
+            }
+        }
+
+        if (collision.gameObject.CompareTag("Missile"))
+        {
+            enemyLife1 -= 10;
+            if (enemyLife1 > 0)
+            {
+                audioSource.Play();
+            }
         }
     }
+
 
 }

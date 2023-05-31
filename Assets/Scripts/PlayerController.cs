@@ -4,6 +4,7 @@ using System.Collections;
 using UnityEngine.Rendering;
 using System.Reflection;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -16,23 +17,27 @@ public class PlayerController : MonoBehaviour
     private bool canShoot;
     private float ScreenHeight;
     public float sensitivity = 7f;
+
     //triple laser
     public GameObject TriplelaserPrefab;
     public Transform TriplelaserSpawnPoint;
     public AudioSource TriplelaserAudioSource;
     public float cooldownDuration = 1f;
     public Image cooldownIndicatorLaser;
-    public Image blueImage;
-    
+    public Image blueImage;    
     private bool isCooldown;
+    private float lastShotTime = 0f;
+
     //first special attack
     public GameObject missilePrefab;
-    public Transform missileSpawnPoint;
     public float cooldownDuration1 = 5f;
     private bool isCooldownMissile;
     public Image cooldownIndicatorMissile;
+    public Image MissileImage;
     public Transform missileSpawnPoint1;
     public Transform missileSpawnPoint2;
+    private float lastShotTime2 = 0f;
+
 
     // Shield Ability
     public GameObject ShieldPrefab;
@@ -41,10 +46,8 @@ public class PlayerController : MonoBehaviour
     private float shieldUsageTime = 10f;
     private float lastShieldActivationTime = 0f;
 
-
-
-
-    //End of Shield Ability
+    public AudioSource Hit;
+    public ParticleSystem explosionParticleSystem;
 
 
 
@@ -63,7 +66,7 @@ public class PlayerController : MonoBehaviour
         TripleShot();
         ShootMissiles();
         ActivateShield();
-
+         
     }
 
     private void MouseControlOption()
@@ -91,8 +94,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
-
     private void ShootLaser()
     {
 
@@ -114,10 +115,8 @@ public class PlayerController : MonoBehaviour
     }
 
     private void TripleShot()
-    {
-         float lastShotTime = 0f;
-
-        if (Input.GetMouseButtonDown(1) && !isCooldown)
+    {         
+        if ((Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Alpha1)) && !isCooldown)
         {
             Instantiate(TriplelaserPrefab, TriplelaserSpawnPoint.position, transform.rotation);
             TriplelaserAudioSource.Play();
@@ -135,28 +134,25 @@ public class PlayerController : MonoBehaviour
             if (timeSinceLastShot >= cooldownDuration)
             { 
                 blueImage.GetComponent<Image>().enabled = true;
-                isCooldown = false;
-                
+                isCooldown = false;              
             }
         }
     }
     private void ShootMissiles()
     {
-        float lastShotTime = 0f;
+        //TODO: improve the missile targeting and movement
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
         int numEnemies = enemies.Length;
 
         if (numEnemies == 0)
         {
-            // No enemies, return
             return;
         }
 
-        if (Input.GetMouseButtonDown(1) && !isCooldownMissile)
+        if ((Input.GetMouseButtonDown(2) || Input.GetKeyDown(KeyCode.Alpha3)) && !isCooldownMissile)
         {
             if (numEnemies == 1)
             {
-                // Only one enemy, both missiles target it
                 GameObject targetEnemy = enemies[0];
                 GameObject missile1 = Instantiate(missilePrefab, missileSpawnPoint1.position, Quaternion.Euler(0f, 0f, -90f));
                 GameObject missile2 = Instantiate(missilePrefab, missileSpawnPoint2.position, Quaternion.Euler(0f, 0f, -90f));
@@ -165,8 +161,9 @@ public class PlayerController : MonoBehaviour
                 missile2.GetComponent<MissileController>().SetTarget(targetEnemy.transform);
 
                 //TriplelaserAudioSource.Play();
-                lastShotTime = Time.time;
+                lastShotTime2 = Time.time;
                 isCooldownMissile = true;
+                MissileImage.GetComponent<Image>().enabled = false;
             }
             else if (enemies.Length > 1)
             {
@@ -174,25 +171,26 @@ public class PlayerController : MonoBehaviour
                 GameObject targetEnemy1 = GetRandomEnemy(enemies);
                 GameObject targetEnemy2 = GetRandomEnemy(enemies, targetEnemy1);
 
-                GameObject missile1 = Instantiate(missilePrefab, missileSpawnPoint1.position, Quaternion.identity);
-                GameObject missile2 = Instantiate(missilePrefab, missileSpawnPoint2.position, Quaternion.identity);
+                GameObject missile1 = Instantiate(missilePrefab, missileSpawnPoint1.position, Quaternion.Euler(0f, 0f, -45f));
+                GameObject missile2 = Instantiate(missilePrefab, missileSpawnPoint2.position, Quaternion.Euler(0f, 0f, -90f));
 
                 missile1.GetComponent<MissileController>().SetTarget(targetEnemy1.transform);
                 missile2.GetComponent<MissileController>().SetTarget(targetEnemy2.transform);
                 //TriplelaserAudioSource.Play();
-                lastShotTime = Time.time;
+                 lastShotTime2 = Time.time;
                  isCooldownMissile = true;
+                 MissileImage.GetComponent<Image>().enabled = false;
             }            
         }
         if (isCooldownMissile)
         {
-            float timeSinceLastShot = Time.time - lastShotTime;
+            float timeSinceLastShot = Time.time - lastShotTime2;
             float cooldownProgress = Mathf.Clamp01(timeSinceLastShot / cooldownDuration);
             UpdateCooldownUI(cooldownProgress, cooldownIndicatorMissile);
 
             if (timeSinceLastShot >= cooldownDuration1)
             {
-                blueImage.GetComponent<Image>().enabled = true;
+                MissileImage.GetComponent<Image>().enabled = true;
                 isCooldownMissile = false;
 
             }
@@ -200,12 +198,9 @@ public class PlayerController : MonoBehaviour
     }
 
 
-
-
-    // newest Changes
     private void ActivateShield()
     {
-        if (Input.GetKeyDown(KeyCode.H) && shieldReady)
+        if (Input.GetKeyDown(KeyCode.Alpha2) && shieldReady)
         {
             // Activate the shield as a child of the spaceship
             GameObject shield = Instantiate(ShieldPrefab, transform);
@@ -233,13 +228,8 @@ public class PlayerController : MonoBehaviour
     {
         yield return new WaitForSeconds(cooldownDuration2);
         shieldReady = true;
+
     }
-
-
-
-    // End of the Newest Changes
-
-
 
     private GameObject GetRandomEnemy(GameObject[] enemies, GameObject ignore = null)
     {
@@ -259,5 +249,26 @@ public class PlayerController : MonoBehaviour
     {
         cooldownIndicator.fillAmount = 0f + progress;
     }
+
+    
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("EnemyLaser"))
+        {           
+            if (explosionParticleSystem != null)
+            {
+                ParticleSystem newExplosion = Instantiate(explosionParticleSystem, transform.position, Quaternion.identity);
+                newExplosion.Play();
+            }
+            Hit.Play();
+
+            GameManagerScript gameManager = FindObjectOfType<GameManagerScript>();
+            gameManager.StartFadeOut();
+            gameManager.StartMainMenuDelay();            
+            Destroy(gameObject);
+
+        }
+    }
+    
 }
      
