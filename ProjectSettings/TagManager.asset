@@ -6,10 +6,12 @@ TagManager:
   tags:
   - Enemy
   - EnemyLaser
-  - TripleLaser
   - RedLaser
   - Missile
   - Canvas
+  - TripleLaser
+  - EnemyBoss1
+  - ThrownObject
   layers:
   - Default
   - TransparentFX

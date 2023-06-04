@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using TMPro;
+using System.Linq;
 
 public class PlayerController : MonoBehaviour
 {
@@ -153,8 +154,10 @@ public class PlayerController : MonoBehaviour
     }
     private void ShootMissiles()
     {
-         
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+
+        GameObject[] enemies = FindGameObjectsWithTags(new string[] { "Enemy", "EnemyBoss1" });
+
+
         int numEnemies = enemies.Length;   
 
         if ((Input.GetMouseButtonDown(2) || Input.GetKeyDown(KeyCode.Alpha3)) && !isCooldownMissile)
@@ -282,7 +285,19 @@ public class PlayerController : MonoBehaviour
         cooldownIndicator.fillAmount = 0f + progress;
     }
 
-    
+    private GameObject[] FindGameObjectsWithTags(params string[] tags)
+    {
+        var all = new List<GameObject>();
+
+        foreach (string tag in tags)
+        {
+            all.AddRange(GameObject.FindGameObjectsWithTag(tag).ToList());
+        }
+
+        return all.ToArray();
+    }
+
+
     private void OnCollisionEnter2D(Collision2D collision)
     {   if (!isGodMode)
         {

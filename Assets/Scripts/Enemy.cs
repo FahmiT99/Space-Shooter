@@ -64,17 +64,20 @@ public class Enemy : MonoBehaviour
     }
     private IEnumerator FadeOutText(GameObject text)
     {
-        Color startColor = text.GetComponent<TextMeshPro>().color;
-        Color endColor = new Color(startColor.r, startColor.g, startColor.b, 0f);
-        float fadeDuration = 1f;
-        float elapsedTime = 0f;
-
-        while (elapsedTime < fadeDuration)
+        if (text != null)
         {
-            elapsedTime += Time.deltaTime;
-            float t = Mathf.Clamp01(elapsedTime / fadeDuration);
-            text.GetComponent<TextMeshPro>().color = Color.Lerp(startColor, endColor, t);
-            yield return null;
+            Color startColor = text.GetComponent<TextMeshPro>().color;
+            Color endColor = new Color(startColor.r, startColor.g, startColor.b, 0f);
+            float fadeDuration = 1f;
+            float elapsedTime = 0f;
+
+            while (elapsedTime < fadeDuration)
+            {
+                elapsedTime += Time.deltaTime;
+                float t = Mathf.Clamp01(elapsedTime / fadeDuration);
+                text.GetComponent<TextMeshPro>().color = Color.Lerp(startColor, endColor, t);
+                yield return null;
+            }
         }
     }
     private void UpdateEnemyLife(int damage)
