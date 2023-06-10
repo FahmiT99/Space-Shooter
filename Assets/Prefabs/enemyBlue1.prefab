@@ -46,6 +46,7 @@ GameObject:
   - component: {fileID: -6486268997865405917}
   - component: {fileID: -653328577834074737}
   - component: {fileID: 3919133722155732246}
+  - component: {fileID: -5458469586338536511}
   m_Layer: 0
   m_Name: enemyBlue1
   m_TagString: Enemy
@@ -315,6 +316,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyLife1: 2
   explosionParticleSystem: {fileID: 2831946975764918057, guid: 8dd8eea85b6fe3b47ba2a292e01b21fa, type: 3}
+  stopParticles1: {fileID: 0}
+  stopParticles2: {fileID: 0}
   movementSpeed: 2
   audioSource: {fileID: -6486268997865405917}
   damageTextPrefab: {fileID: 6613540995496826018, guid: cc2dba90a4837494f9019a02cf0308e1, type: 3}
@@ -331,6 +334,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   laserPrefab: {fileID: 1144672978867142846, guid: c3fa53870f6547c48b10e21f0d7c1359, type: 3}
+  throwableObjectPrefab: {fileID: 0}
   minShootInterval: 2
   maxShootInterval: 4
   SpawnPoint: {fileID: 476489808011803904}
+  SpawnPoint2: {fileID: 0}
+  throwSpawnPoint: {fileID: 0}
+  throwSpeed: 5
+  throwReverseSpeed: 2
+  throwBoundaryOffset: 1
+  throwObjectAmount: 5
+--- !u!114 &-5458469586338536511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7923888530022507679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33729c6c7f55e1348b62e77d23077d99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

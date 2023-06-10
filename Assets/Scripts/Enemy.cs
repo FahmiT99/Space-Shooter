@@ -12,13 +12,21 @@ public class Enemy : MonoBehaviour
 
     [SerializeField] int enemyLife1 = 3;
     public ParticleSystem explosionParticleSystem;
+    public ParticleSystem stopParticles1;
+    public ParticleSystem stopParticles2;
     public float movementSpeed = 2f; // Speed of enemy movement
     private float minY; // Minimum Y position within the camera view
     private float maxY; // Maximum Y position within the camera view
     private int direction = 1;
     public AudioSource audioSource;
     public GameObject damageTextPrefab;
-
+    private bool isMovementAllowed = true;
+    private float stopDuration = 3f;
+    private float stopTimer = 0f;
+    private bool isCooldownActive = false;
+    private float cooldownDuration = 20f;
+    private float cooldownTimer = 0f;
+    private bool isParticlesActive = false;
 
     private void Start()
     {
@@ -29,19 +37,95 @@ public class Enemy : MonoBehaviour
         maxY = mainCamera.ViewportToWorldPoint(new Vector3(0, 1, 0)).y - halfEnemyHeight;
     }
 
-
     void Update()
     {
-         Vector3 newPosition = transform.position + new Vector3(0, direction * movementSpeed * Time.deltaTime, 0);
-
-        // Check if the enemy has reached the boundary
-        if (newPosition.y >= maxY || newPosition.y <= minY)
+        if (isMovementAllowed)
         {
-            direction *= -1; // Reverse the movement direction
+            Vector3 newPosition = transform.position + new Vector3(0, direction * movementSpeed * Time.deltaTime, 0);
+
+            // Check if the enemy has reached the boundary
+            if (newPosition.y >= maxY || newPosition.y <= minY)
+            {
+                direction *= -1; // Reverse the movement direction
+            }
+            // Set the new position
+            transform.position = newPosition;
         }
-        // Set the new position
-        transform.position = newPosition;
-        
+        else
+        {
+            // Stop the enemy's movement for a certain duration
+            stopTimer += Time.deltaTime;
+            if (stopTimer >= stopDuration)
+            {
+                isMovementAllowed = true;
+                stopTimer = 0f;
+                DeactivateParticles();
+            }
+        }
+
+        if (isCooldownActive)
+        {
+            // Count down the cooldown timer
+            cooldownTimer += Time.deltaTime;
+            if (cooldownTimer >= cooldownDuration)
+            {
+                isCooldownActive = false;
+                cooldownTimer = 0f;
+            }
+        }
+        else
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha4))
+            {
+                ActivateParticles();
+                StartCoroutine(DelayedActivation());
+                // Stop the movement when the Space key is pressed
+            }
+        }
+    }
+
+    private IEnumerator DelayedActivation()
+    {
+        yield return new WaitForSeconds(0.5f); // Wait for one second
+
+        isMovementAllowed = false;
+        isCooldownActive = true;
+    }
+
+    private void ActivateParticles()
+    {
+        if (!isParticlesActive)
+        {
+            if (stopParticles1 != null)
+            {
+                stopParticles1.Play();
+            }
+
+            if (stopParticles2 != null)
+            {
+                stopParticles2.Play();
+            }
+
+            isParticlesActive = true;
+        }
+    }
+
+    private void DeactivateParticles()
+    {
+        if (isParticlesActive)
+        {
+            if (stopParticles1 != null)
+            {
+                stopParticles1.Stop();
+            }
+
+            if (stopParticles2 != null)
+            {
+                stopParticles2.Stop();
+            }
+
+            isParticlesActive = false;
+        }
     }
 
     private void PlayExplosion()

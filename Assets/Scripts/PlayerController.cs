@@ -59,6 +59,7 @@ public class PlayerController : MonoBehaviour
 
 
 
+
     private void Start()
     {
         ScreenHeight = Camera.main.orthographicSize;
@@ -242,6 +243,7 @@ public class PlayerController : MonoBehaviour
             shield.transform.localPosition = Vector3.zero;
             Destroy(shield, shieldUsageTime);
 
+
             shieldReady = false;
             lastShieldActivationTime = Time.time;
 
@@ -314,7 +316,6 @@ public class PlayerController : MonoBehaviour
                 gameManager.StartFadeOut();
                 gameManager.StartMainMenuDelay();
                 Destroy(gameObject);
-
             }
         }
     }

@@ -46,6 +46,7 @@ GameObject:
   - component: {fileID: -7278830432097913994}
   - component: {fileID: 2114184631406944854}
   - component: {fileID: 4080764579230281633}
+  - component: {fileID: -3756605578407553282}
   m_Layer: 0
   m_Name: ufoRed
   m_TagString: Enemy
@@ -257,9 +258,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   laserPrefab: {fileID: 1144672978867142846, guid: c3fa53870f6547c48b10e21f0d7c1359, type: 3}
+  throwableObjectPrefab: {fileID: 0}
   minShootInterval: 0.5
   maxShootInterval: 1
   SpawnPoint: {fileID: 5851799553622174497}
+  SpawnPoint2: {fileID: 0}
+  throwSpawnPoint: {fileID: 0}
+  throwSpeed: 5
+  throwReverseSpeed: 2
+  throwBoundaryOffset: 1
+  throwObjectAmount: 5
 --- !u!114 &2114184631406944854
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -274,6 +282,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyLife1: 15
   explosionParticleSystem: {fileID: 2831946975764918057, guid: 8dd8eea85b6fe3b47ba2a292e01b21fa, type: 3}
+  stopParticles1: {fileID: 0}
+  stopParticles2: {fileID: 0}
   movementSpeed: 8
   audioSource: {fileID: -3059355489348117295}
   damageTextPrefab: {fileID: 6613540995496826018, guid: cc2dba90a4837494f9019a02cf0308e1, type: 3}
@@ -312,3 +322,15 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.455
+--- !u!114 &-3756605578407553282
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5266973558418643792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33729c6c7f55e1348b62e77d23077d99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

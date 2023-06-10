@@ -46,6 +46,7 @@ GameObject:
   - component: {fileID: 3141222017614602219}
   - component: {fileID: -2585148701283407603}
   - component: {fileID: 1559012447285214702}
+  - component: {fileID: -7605836197162386596}
   m_Layer: 0
   m_Name: enemyBlack2
   m_TagString: Enemy
@@ -215,9 +216,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   laserPrefab: {fileID: 1144672978867142846, guid: c3fa53870f6547c48b10e21f0d7c1359, type: 3}
+  throwableObjectPrefab: {fileID: 0}
   minShootInterval: 1
   maxShootInterval: 2
   SpawnPoint: {fileID: 6090309605245760635}
+  SpawnPoint2: {fileID: 0}
+  throwSpawnPoint: {fileID: 0}
+  throwSpeed: 5
+  throwReverseSpeed: 2
+  throwBoundaryOffset: 1
+  throwObjectAmount: 5
 --- !u!114 &-2585148701283407603
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -232,6 +240,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyLife1: 6
   explosionParticleSystem: {fileID: 2831946975764918057, guid: 8dd8eea85b6fe3b47ba2a292e01b21fa, type: 3}
+  stopParticles1: {fileID: 0}
+  stopParticles2: {fileID: 0}
   movementSpeed: 4
   audioSource: {fileID: 1559012447285214702}
   damageTextPrefab: {fileID: 6613540995496826018, guid: cc2dba90a4837494f9019a02cf0308e1, type: 3}
@@ -331,3 +341,15 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &-7605836197162386596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8396308083893608239}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33729c6c7f55e1348b62e77d23077d99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

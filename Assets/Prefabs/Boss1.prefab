@@ -25,7 +25,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 195829368133357862}
   m_LocalRotation: {x: -0, y: -0, z: -0.7065038, w: 0.70770925}
-  m_LocalPosition: {x: -0.6399994, y: 0.09800005, z: 0}
+  m_LocalPosition: {x: -0.582, y: 0.055, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -72,7 +72,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_Sprite: {fileID: 21300000, guid: 4ee4e20c99136104c959fc5c668bc727, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -607,7 +607,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_Sprite: {fileID: 21300000, guid: 556f96764b5318c4788311d17fd38689, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -947,6 +947,7 @@ GameObject:
   - component: {fileID: 5149129942101700297}
   - component: {fileID: 1402282765779955702}
   - component: {fileID: -6814319671507001000}
+  - component: {fileID: 2893047349531658853}
   m_Layer: 0
   m_Name: Boss1
   m_TagString: EnemyBoss1
@@ -961,7 +962,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8833613329415801111}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: -0.00034904052, z: 0, w: 0.99999994}
   m_LocalPosition: {x: 27.354, y: -2.812, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -982,7 +983,7 @@ Transform:
   - {fileID: 4922419902104067589}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -0.04, z: 0}
 --- !u!50 &1819113565612245429
 Rigidbody2D:
   serializedVersion: 4
@@ -1092,6 +1093,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyLife1: 30
   explosionParticleSystem: {fileID: 2831946975764918057, guid: 8dd8eea85b6fe3b47ba2a292e01b21fa, type: 3}
+  stopParticles1: {fileID: 0}
+  stopParticles2: {fileID: 0}
   movementSpeed: 4
   audioSource: {fileID: 1402282765779955702}
   damageTextPrefab: {fileID: 6613540995496826018, guid: cc2dba90a4837494f9019a02cf0308e1, type: 3}
@@ -1214,6 +1217,18 @@ MonoBehaviour:
   throwReverseSpeed: 2
   throwBoundaryOffset: 1
   throwObjectAmount: 5
+--- !u!114 &2893047349531658853
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8833613329415801111}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33729c6c7f55e1348b62e77d23077d99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &9030176990036349215
 GameObject:
   m_ObjectHideFlags: 0
