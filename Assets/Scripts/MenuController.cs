@@ -6,14 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class MenuController : MonoBehaviour
 {
-    public TextMeshProUGUI highScoreText;
-    private int highestScore;
-    private void Start()
-    {
-        // Load the highest score from PlayerPrefs
-        highestScore = PlayerPrefs.GetInt("HighestScore", 0);
-        highScoreText.text = "HighScore: " + highestScore;
-    }
+
      
     void Update()
     {

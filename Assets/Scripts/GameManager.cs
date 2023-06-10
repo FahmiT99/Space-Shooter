@@ -10,9 +10,11 @@ public class GameManagerScript : MonoBehaviour
     private float currentVolume;
     private float startVolume;
 
+    private WaveCountUI waveCountUI;
+
     private void Start()
     {
- 
+        waveCountUI = FindObjectOfType<WaveCountUI>();
         musicSource.Play();
         startVolume = musicSource.volume;
         currentVolume = startVolume;
@@ -44,5 +46,6 @@ public class GameManagerScript : MonoBehaviour
     {
         yield return new WaitForSeconds(2f); // Wait for 2 seconds
         SceneManager.LoadScene("Main Menu");
+        waveCountUI.OnSceneEnding(); //to reset the score of the wave
     }
 }
