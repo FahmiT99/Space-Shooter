@@ -15,7 +15,7 @@ public class Boss1Shooting : MonoBehaviour
 
 
     private float fireRate;
-    private float canFire = 2f;
+    private float canFire = 3f;
     public Transform LaserSpawnPoint;
     [SerializeField] private GameObject enemyMegaLaserPrefab;
     public AudioSource MegaLaser;
@@ -24,7 +24,7 @@ public class Boss1Shooting : MonoBehaviour
     {
         
         timer = GetRandomShootInterval();
-       // StartCoroutine(BossAttackCoroutine());
+        
     }
     private void Update()
     {
@@ -40,7 +40,7 @@ public class Boss1Shooting : MonoBehaviour
     {
         if(Time.time > canFire)
         {
-            fireRate = Random.Range(2f, 4f);
+            fireRate = Random.Range(3f, 7f);
             canFire = Time.time + fireRate;
 
             GameObject enemyMegaLaser = Instantiate(enemyMegaLaserPrefab, LaserSpawnPoint.position, Quaternion.Euler(0f, 0f, 0f));
@@ -53,7 +53,7 @@ public class Boss1Shooting : MonoBehaviour
     }
     private IEnumerator DestroyMegaLaser(GameObject enemyMegaLaser)
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
         Destroy(enemyMegaLaser);
         MegaLaser.Stop();
 
