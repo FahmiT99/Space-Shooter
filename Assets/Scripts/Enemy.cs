@@ -6,6 +6,7 @@ using UnityEngine.Rendering;
 using System.Reflection;
 using System.Collections.Generic;
 using System;
+using Unity.VisualScripting;
 
 public class Enemy : MonoBehaviour
 {
@@ -23,20 +24,30 @@ public class Enemy : MonoBehaviour
     private bool isMovementAllowed = true;
     private float stopDuration = 3f;
     private float stopTimer = 0f;
+
     private bool isCooldownActive = false;
     private float cooldownDuration = 20f;
-    private float cooldownTimer = 0f;
+    private float lastShotTime = 0f;
     private bool isParticlesActive = false;
+    private GameObject electroImage;
+    private GameObject cooldownIndicatorelectro;
+    private Image ElectroImage;
+    private Image cooldownIndicatorElectro;
+
+
 
     private void Start()
     {
+        electroImage = GameObject.FindGameObjectWithTag("ElectroImage");
+        cooldownIndicatorelectro = GameObject.FindGameObjectWithTag("ElectroCooldownIndicator");
+        ElectroImage = electroImage.GetComponent<Image>();
+        cooldownIndicatorElectro = cooldownIndicatorelectro.GetComponent<Image>();
         float halfEnemyHeight = transform.localScale.y / 2f;
         Camera mainCamera = Camera.main;
         // Calculate the minimum and maximum Y positions within the camera view
         minY = mainCamera.ViewportToWorldPoint(new Vector3(0, 0, 0)).y + halfEnemyHeight;
         maxY = mainCamera.ViewportToWorldPoint(new Vector3(0, 1, 0)).y - halfEnemyHeight;
     }
-
     void Update()
     {
         if (isMovementAllowed)
@@ -62,36 +73,36 @@ public class Enemy : MonoBehaviour
                 DeactivateParticles();
             }
         }
-
         if (isCooldownActive)
         {
-            // Count down the cooldown timer
-            cooldownTimer += Time.deltaTime;
-            if (cooldownTimer >= cooldownDuration)
+            float timeSinceLastShot = Time.time - lastShotTime;
+            float cooldownProgress = Mathf.Clamp01(timeSinceLastShot / cooldownDuration);
+            UpdateCooldownUI(cooldownProgress, cooldownIndicatorElectro);
+
+            if (timeSinceLastShot >= cooldownDuration)
             {
+                ElectroImage.enabled = true;
                 isCooldownActive = false;
-                cooldownTimer = 0f;
-            }
+            }             
         }
         else
         {
             if (Input.GetKeyDown(KeyCode.Alpha4))
             {
+
                 ActivateParticles();
-                StartCoroutine(DelayedActivation());
-                // Stop the movement when the Space key is pressed
+                lastShotTime = Time.time;
+                isMovementAllowed = false;
+                isCooldownActive = true;
+                ElectroImage.enabled = false;
             }
         }
     }
 
-    private IEnumerator DelayedActivation()
+    private void UpdateCooldownUI(float progress, Image cooldownIndicator)
     {
-        yield return new WaitForSeconds(0.5f); // Wait for one second
-
-        isMovementAllowed = false;
-        isCooldownActive = true;
+        cooldownIndicator.fillAmount = 0f + progress;
     }
-
     private void ActivateParticles()
     {
         if (!isParticlesActive)
@@ -148,8 +159,6 @@ public class Enemy : MonoBehaviour
     }
     private IEnumerator FadeOutText(GameObject text)
     {
-        if (text != null)
-        {
             Color startColor = text.GetComponent<TextMeshPro>().color;
             Color endColor = new Color(startColor.r, startColor.g, startColor.b, 0f);
             float fadeDuration = 1f;
@@ -157,12 +166,14 @@ public class Enemy : MonoBehaviour
 
             while (elapsedTime < fadeDuration)
             {
-                elapsedTime += Time.deltaTime;
-                float t = Mathf.Clamp01(elapsedTime / fadeDuration);
-                text.GetComponent<TextMeshPro>().color = Color.Lerp(startColor, endColor, t);
-                yield return null;
-            }
-        }
+                if (text != null)
+                {
+                    elapsedTime += Time.deltaTime;
+                    float t = Mathf.Clamp01(elapsedTime / fadeDuration);
+                    text.GetComponent<TextMeshPro>().color = Color.Lerp(startColor, endColor, t);
+                    yield return null;
+                }
+            }      
     }
     private void UpdateEnemyLife(int damage)
     {
@@ -185,7 +196,6 @@ public class Enemy : MonoBehaviour
             enemyLife1 -= 1;
             UpdateEnemyLife(1);
         }
-
         if (collision.gameObject.CompareTag("TripleLaser"))
         {
             enemyLife1 -= 2;
@@ -193,14 +203,10 @@ public class Enemy : MonoBehaviour
             UpdateEnemyLife(2);
             UpdateEnemyLife(2);
         }
-
         if (collision.gameObject.CompareTag("Missile"))
         {
-            enemyLife1 = 0;
-            UpdateEnemyLife(10);
-
+            enemyLife1 -= 5;
+            UpdateEnemyLife(5);
         }
     }
-
-
 }

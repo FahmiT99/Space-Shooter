@@ -12,6 +12,9 @@ TagManager:
   - TripleLaser
   - EnemyBoss1
   - ThrownObject
+  - ElectroImage
+  - ElectroCooldownIndicator
+  - MegaLaser
   layers:
   - Default
   - TransparentFX
@@ -48,4 +51,7 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: New Layer 1
+    uniqueID: 430233069
     locked: 0
