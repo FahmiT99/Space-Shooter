@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2178929241632645737}
   - component: {fileID: 7790196353907710152}
   - component: {fileID: 1201033703207051695}
+  - component: {fileID: -595059293331738891}
   m_Layer: 0
   m_Name: Electicity
   m_TagString: Untagged
@@ -4887,3 +4888,15 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!114 &-595059293331738891
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1065792003354349280}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f7aead3845c7134b9a024c49c529d00, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
