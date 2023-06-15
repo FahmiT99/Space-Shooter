@@ -50,8 +50,11 @@ public class PlayerController : MonoBehaviour
     private float cooldownDuration2 = 30f; // ShieldUsageTime + 20f
     private float shieldUsageTime = 10f;
     private float lastShieldActivationTime = 0f;
+    public Image shieldImage;
+    public Image cooldownIndicatorShield;
+    
 
-   
+
     //GOd mode
     public AudioSource GodModeAudioSource;
     public TextMeshProUGUI godModeIndicatorText;
@@ -203,7 +206,7 @@ public class PlayerController : MonoBehaviour
         if (isCooldownMissile)
         {
             float timeSinceLastShot = Time.time - lastShotTime2;
-            float cooldownProgress = Mathf.Clamp01(timeSinceLastShot / cooldownDuration);
+            float cooldownProgress = Mathf.Clamp01(timeSinceLastShot / cooldownDuration1);
             UpdateCooldownUI(cooldownProgress, cooldownIndicatorMissile);
 
             if (timeSinceLastShot >= cooldownDuration1)
@@ -217,20 +220,14 @@ public class PlayerController : MonoBehaviour
 
     private void SetGodMode(bool isActive)
     {
-        // Enable/disable God Mode and update the indicator text
         isGodMode = isActive;
-
         if (isGodMode)
         {
-            // Play the sound effect when God Mode is activated
             GodModeAudioSource.Play();
-
-            // Show the God Mode indicator text
             godModeIndicatorText.text = "God Mode Activated";
         }
         else
-        {
-            // Hide the God Mode indicator text
+        {           
             godModeIndicatorText.text = string.Empty;
         }
     }
@@ -242,30 +239,23 @@ public class PlayerController : MonoBehaviour
             GameObject shield = Instantiate(ShieldPrefab, transform);
             shield.transform.localPosition = Vector3.zero;
             Destroy(shield, shieldUsageTime);
-
-
-            shieldReady = false;
             lastShieldActivationTime = Time.time;
-
-            StartCoroutine(ActivateShieldCooldown());
+            shieldReady = false;
+            shieldImage.GetComponent<Image>().enabled = false;
         }
 
         if (!shieldReady)
         {
             // Check if the cooldown is over
             float timeSinceLastActivation = Time.time - lastShieldActivationTime;
+            float cooldownProgress = Mathf.Clamp01(timeSinceLastActivation / cooldownDuration2);
+            UpdateCooldownUI(cooldownProgress, cooldownIndicatorShield);
             if (timeSinceLastActivation >= cooldownDuration2)
             {
+                shieldImage.GetComponent<Image>().enabled = true;
                 shieldReady = true;
             }
         }
-    }
-
-    private IEnumerator ActivateShieldCooldown()
-    {
-        yield return new WaitForSeconds(cooldownDuration2);
-        shieldReady = true;
-
     }
 
     private GameObject GetRandomEnemy(GameObject[] enemies, GameObject ignore = null)
@@ -303,7 +293,7 @@ public class PlayerController : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {   if (!isGodMode)
         {
-            if (collision.gameObject.CompareTag("EnemyLaser"))
+            if (collision.gameObject.CompareTag("EnemyLaser") )
             {
                 if (explosionParticleSystem != null)
                 {
@@ -319,6 +309,29 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-    
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (!isGodMode)
+        {
+            if (shieldReady)
+            {
+                if (collision.gameObject.CompareTag("MegaLaser"))
+                {
+                    if (explosionParticleSystem != null)
+                    {
+                        ParticleSystem newExplosion = Instantiate(explosionParticleSystem, transform.position, Quaternion.identity);
+                        newExplosion.Play();
+                    }
+                    Hit.Play();
+
+                    GameManagerScript gameManager = FindObjectOfType<GameManagerScript>();
+                    gameManager.StartFadeOut();
+                    gameManager.StartMainMenuDelay();
+                    Destroy(gameObject);
+                }
+            }
+        }
+    }
 }
      

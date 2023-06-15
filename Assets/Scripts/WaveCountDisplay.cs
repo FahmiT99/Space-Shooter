@@ -13,6 +13,6 @@ public class WaveCountDisplay : MonoBehaviour
         // Load the highest wave score from PlayerPrefs
         int highestWave = PlayerPrefs.GetInt("HighestWave", 0);
 
-        waveCountText.text = "Highest wave so far: " + highestWave;
+        waveCountText.text = "Highest score so far: " + highestWave;
     }
 }
